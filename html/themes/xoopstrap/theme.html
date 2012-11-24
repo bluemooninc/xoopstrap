@@ -24,9 +24,9 @@
 	<script src="<{$xoops_imageurl}>/js/bootstrap.js"></script>
 	<!-- RMV: added module header -->
 	<{$xoops_module_header}>
-	<script type="text/javascript">
-		<!-- <{$xoops_js}> -->
-	</script>
+	<{*
+	<script type="text/javascript"><{$xoops_js}></script>
+	*}>
 </head>
 <body>
 <div class="navbar navbar-fixed-top">
@@ -140,13 +140,14 @@
 	</div>
 </div>
 
-<!-- Subhead
-================================================== -->
+<!-- Subhead ================================================== -->
 <header class="jumbotron subhead" id="overview">
 	<div class="container">
 		<div class="pull-left">
+			<h2><{$xoops_slogan}> Demo site</h2>
+<{*
 			<img src="<{$xoops_imageurl}>xcl_images/logo.png" alt="<{$xoops_sitename}>" title="<{$xoops_sitename}>"/>
-			<h3><{$xoops_slogan}> Demo site</h3>
+*}>
 		</div>
 	</div>
 </header>
@@ -182,7 +183,7 @@
 			<div class="well sidebar-nav">
 				<!-- LEFT -->
 				<{foreach item=block from=$xoops_lblocks}>
-				<h3><{$block.title}></h3>
+				<{$block.title}>
 				<{$block.content}>
 				<{/foreach}>
 			</div>
@@ -192,16 +193,19 @@
 		<{if $xoops_showcblock == 1 || $xoops_contents }>
 		<div class="<{$centerspan}>">
 			<{if empty($xoops_contents)}>
-			<!--
 			<div class="hero-unit">
 				<p>&nbsp;</p>
 				<p>&nbsp;</p>
 				<p>&nbsp;</p>
 				<p>&nbsp;</p>
 				<p>&nbsp;</p>
-				<p>&nbsp;</p>
 			</div>
-			<{/if}>-->
+			<{else}>
+			<div class="bs-docs-contents">
+				<{$xoops_contents}>
+			</div>
+			<{/if}>
+
 			<div class="row-fluid">
 				<{if $xoops_clblocks && $xoops_ccblocks && $xoops_crblocks}>
 				<{assign var="cspan" value="span4"}>
@@ -251,11 +255,6 @@
 				</div>
 				<{/if}>
 			</div>
-			<{if $xoops_contents}>
-			<div class="bs-docs-contents">
-				<{$xoops_contents}>
-			</div>
-			<{/if}>
 		</div>
 		<{/if}>
 		<{if $xoops_showrblock == 1}>
@@ -263,7 +262,7 @@
 			<div class="well sidebar-nav">
 				<!-- RIGHT -->
 				<{foreach item=block from=$xoops_rblocks}>
-				<h3><{$block.title}></h3>
+				<{$block.title}>
 				<{$block.content}>
 				<{/foreach}>
 			</div>
