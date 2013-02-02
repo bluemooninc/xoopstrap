@@ -6,16 +6,16 @@
 */
 
 .hero-unit {
-    background-color: #ccc !important;
-    margin-bottom: 30px !important;
-    padding: 40px !important;
+	background-image: url("img/hero.jpg");
+	background-size: cover;
+	padding: 0 0 160px !important;
 }
 
 /* Body and structure
 -------------------------------------------------- */
 
 body {
-    background-image:  url("xcl_images/noise-lighter.jpg");
+  background-image:  url("xcl_images/noise-lighter.jpg");
   position: relative;
   padding-top: 40px;
 }

@@ -20,13 +20,15 @@
 	<link rel="stylesheet" href="<{$xoops_imageurl}>/css/bootstrap-responsive.css">
 	<link rel="stylesheet" href="<{$xoops_imageurl}>css/override.css">
 	<link rel="stylesheet" href="css/custom-theme/jquery-ui-1.8.16.custom.css" type="text/css">
-	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+	<script src="<{$xoops_imageurl}>/js/jquery-1.8.2.min.js"></script>
 	<script src="<{$xoops_imageurl}>/js/bootstrap.js"></script>
 	<!-- RMV: added module header -->
 	<{$xoops_module_header}>
-	<{*
-	<script type="text/javascript"><{$xoops_js}></script>
-	*}>
+	<script type="text/javascript"><
+	{
+		$xoops_js
+	}
+	></script>
 </head>
 <body>
 <div class="navbar navbar-fixed-top">
@@ -39,49 +41,52 @@
 						<{$xoops_sitename}>
 					</a>
 					<{if $moduleMenu}>
-					<li>
-						<a href="<{$xoops_url}>" class="home active">
-							<i class="icon-white icon-home"></i>&nbsp;
-						</a>
-					</li>
 					<{foreach item=modMenu from=$moduleMenu}>
+					<{if $modMenu.sublinks}>
 					<li class="dropdown">
-						<a class="dropdown-toggle" data-toggle="dropdown" href="#">
-							<i class="icon-envelope"></i>
+						<a class="dropdown-toggle" data-toggle="dropdown" href="<{$modMenu.name}>">
 							<{$modMenu.name}>
+							<{if $modMenu.sublinks}>
 							<b class="caret"></b>
+							<{/if}>
 						</a>
 						<!-- Drop down -->
 						<ul class="dropdown-menu">
+							<{foreach item=subMenu from=$modMenu.sublinks}>
+							<{if $subMenu.dropdown}>
+							<li class="dropdown nondot">
+								<a class="dropdown-toggle" data-toggle="dropdown" href="#">
+									<i class="icon-white icon-th-list"></i>
+									<{$subMenu.name}>
+									<b class="caret"></b></a>
+								<!-- Drop down -->
+								<ul class="dropdown-menu">
+									<{foreach item=dropwdown from=$subMenu.dropdown}>
+									<li>
+										<a href="<{$dropwdown.url}>"><{$dropwdown.name}></a>
+									</li>
+									<{/foreach}>
+								</ul>
+							</li>
+							<{else}>
+							<{if $subMenu.url}>
+							<li>
+								<a href="<{$subMenu.url}>"><{$subMenu.name}></a>
+							</li>
+							<{else}>
+							<li class="submenu-title">
+								<{$subMenu.name}>
+							</li>
+							<{/if}>
+							<{/if}>
+							<{/foreach}>
 							<{include file='db:system_notification_select.html'}>
 						</ul>
 					</li>
 					<li class="divider-vertical"></li>
-					<{foreach item=subMenu from=$modMenu.sublinks}>
-					<{if $subMenu.dropdown}>
-					<li class="dropdown nondot">
-						<a class="dropdown-toggle" data-toggle="dropdown" href="#">
-							<i class="icon-white icon-th-list"></i>
-							<{$subMenu.name}>
-							<b class="caret"></b></a>
-						<!-- Drop down -->
-						<ul class="dropdown-menu">
-							<{foreach item=dropwdown from=$subMenu.dropdown}>
-							<li>
-								<a href="<{$dropwdown.url}>"><{$dropwdown.name}></a>
-							</li>
-							<{/foreach}>
-						</ul>
-					</li>
-					<{else}>
-					<li>
-						<a href="<{$subMenu.url}>"><{$subMenu.name}></a>
-					</li>
 					<{/if}>
-					<li class="divider-vertical"></li>
 					<{/foreach}>
-					<{/foreach}>
-					<{else}>
+					<{/if}>
 					<{* Left Block for ground Menu *}>
 					<{foreach item=block from=$xoops_cgblocks}>
 					<li class="dropdown">
@@ -98,7 +103,7 @@
 					</li>
 					<li class="divider-vertical"></li>
 					<{/foreach}>
-					<{/if}>
+
 				</ul>
 			</div>
 			<!--/.nav-collapse -->
@@ -140,15 +145,9 @@
 	</div>
 </div>
 
-<!-- Subhead ================================================== -->
 <header class="jumbotron subhead" id="overview">
 	<div class="container">
-		<div class="pull-left">
-			<h2><{$xoops_slogan}> Demo site</h2>
-<{*
-			<img src="<{$xoops_imageurl}>xcl_images/logo.png" alt="<{$xoops_sitename}>" title="<{$xoops_sitename}>"/>
-*}>
-		</div>
+		<h2><{$xoops_slogan}></h2>
 	</div>
 </header>
 <br/>
@@ -174,23 +173,23 @@
 		<{assign var="sidespan" value="span3"}>
 		<{assign var="centerspan" value="span9"}>
 		<{elseif $xoops_showlblock==1 && $xoops_showcblock==0 && $xoops_showrblock==1}>
-		<{assign var="sidespan" value="span6"}>
-		<{assign var="centerspan" value="span0"}>
+		<{assign var="sidespan" value="span2"}>
+		<{assign var="centerspan" value="span8"}>
 		<{/if}>
 		<!-- left block -->
 		<{if $xoops_showlblock == 1}>
 		<div class="<{$sidespan}>">
+			<!-- LEFT -->
+			<{foreach item=block from=$xoops_lblocks}>
 			<div class="well sidebar-nav">
-				<!-- LEFT -->
-				<{foreach item=block from=$xoops_lblocks}>
 				<{$block.title}>
 				<{$block.content}>
-				<{/foreach}>
 			</div>
+			<{/foreach}>
 		</div>
 		<{/if}>
 		<!-- Center block -->
-		<{if $xoops_showcblock == 1 || $xoops_contents }>
+
 		<div class="<{$centerspan}>">
 			<{if empty($xoops_contents)}>
 			<div class="hero-unit">
@@ -205,67 +204,46 @@
 				<{$xoops_contents}>
 			</div>
 			<{/if}>
-
-			<div class="row-fluid">
-				<{if $xoops_clblocks && $xoops_ccblocks && $xoops_crblocks}>
-				<{assign var="cspan" value="span4"}>
-				<{elseif !isset($xoops_clblocks) && $xoops_ccblocks && $xoops_crblocks}>
-				<{assign var="cspan" value="span6"}>
-				<{elseif $xoops_clblocks && !isset($xoops_ccblocks) && $xoops_crblocks}>
-				<{assign var="cspan" value="span6"}>
-				<{elseif $xoops_clblocks && $xoops_ccblocks && !isset($xoops_crblocks)}>
-				<{assign var="cspan" value="span6"}>
-				<{elseif !isset($xoops_clblocks) && !isset($xoops_ccblocks) && $xoops_crblocks}>
-				<{assign var="cspan" value="span12"}>
-				<{elseif $xoops_clblocks && !isset($xoops_ccblocks) && !isset($xoops_crblocks)}>
-				<{assign var="cspan" value="span12"}>
-				<{elseif !isset($xoops_clblocks) && $xoops_ccblocks && !isset($xoops_crblocks)}>
-				<{assign var="cspan" value="span12"}>
-				<{elseif $xoops_clblock && !isset($xoops_ccblocks) && !isset($xoops_crblocks)}>
-				<{assign var="cspan" value="span12"}>
-				<{/if}>
-				<!-- BLOCK Center-Left -->
-				<{if isset($xoops_clblocks)}>
-				<div class="<{$cspan}>">
-					<!-- CENTER LEFT -->
-					<{foreach item=block from=$xoops_clblocks}>
-					<h3><{$block.title}></h3>
-					<{$block.content}>
-					<{/foreach}>
-				</div>
-				<{/if}>
-				<!-- BLOCK Center-Center -->
-				<{if isset($xoops_ccblocks)}>
-				<div class="<{$cspan}>">
-					<!-- CENTER CENTER -->
-					<{foreach item=block from=$xoops_ccblocks}>
-					<h3><{$block.title}></h3>
-					<{$block.content}>
-					<{/foreach}>
-				</div>
-				<{/if}>
-				<!-- BLOCK Center-Right -->
-				<{if isset($xoops_crblocks)}>
-				<div class="<{$cspan}>">
-					<!-- CENTER RIGHT -->
-					<{foreach item=block from=$xoops_crblocks}>
-					<h3><{$block.title}></h3>
-					<{$block.content}>
-					<{/foreach}>
-				</div>
-				<{/if}>
-			</div>
-		</div>
-		<{/if}>
-		<{if $xoops_showrblock == 1}>
-		<div class="<{$sidespan}>">
-			<div class="well sidebar-nav">
-				<!-- RIGHT -->
-				<{foreach item=block from=$xoops_rblocks}>
-				<{$block.title}>
+			<table class="table">
+			<tr><td width="50%">
+			<!-- BLOCK Center-Left -->
+			<{if isset($xoops_clblocks)}>
+				<!-- CENTER LEFT -->
+				<{foreach item=block from=$xoops_clblocks}>
+				<h3><{$block.title}></h3>
 				<{$block.content}>
 				<{/foreach}>
+			<{/if}>
+			</td><td>
+			<!-- BLOCK Center-Right -->
+			<{if isset($xoops_crblocks)}>
+				<!-- CENTER RIGHT -->
+				<{foreach item=block from=$xoops_crblocks}>
+				<h3><{$block.title}></h3>
+				<{$block.content}>
+				<{/foreach}>
+			<{/if}>
+			</td></tr>
+			</table>
+			<!-- BLOCK Center-Center -->
+			<{if isset($xoops_ccblocks)}>
+				<!-- CENTER CENTER -->
+				<{foreach item=block from=$xoops_ccblocks}>
+				<h3><{$block.title}></h3>
+				<{$block.content}>
+				<{/foreach}>
+			<{/if}>
+		</div>
+
+		<{if $xoops_showrblock == 1}>
+		<div class="<{$sidespan}>">
+			<!-- RIGHT -->
+			<{foreach item=block from=$xoops_rblocks}>
+			<div class="well sidebar-nav">
+				<{$block.title}>
+				<{$block.content}>
 			</div>
+			<{/foreach}>
 		</div>
 		<{/if}>
 	</div>
@@ -278,536 +256,5 @@
 		</p>
 	</footer>
 </div>
-<!-- history back script -->
-<script type="text/javascript">
-	function history_back() {
-		var str = document.referrer;
-
-		if (document.URL.indexOf("modules/point/index.php") > 0) {
-			document.location.href = "<{$xoops_url}>";
-			return;
-		}
-		if (document.URL.indexOf("modules/xoopsmembers") > 0) {
-			document.location.href = "<{$xoops_url}>/modules/message/index.php?action=send&menu=send";
-			return;
-		}
-		if (document.URL.indexOf("modules/bulletin") > 0 && document.URL.indexOf("page=article") > 0 && document.URL.indexOf("storyid=") > 0) {
-			document.location.href = "<{$xoops_url}>/modules/message/";
-			return;
-		}
-		if (document.URL.indexOf("modules/bulletin") > 0 && document.URL.indexOf("op=comments") > 0 && document.URL.indexOf("storytopic") > 0) {
-			document.location.href = "<{$xoopsURL}>/modules/bulletin/?op=comments";
-			return;
-		}
-		if (str && ( document.URL.indexOf("modules/point/index.php") <= 0 )) {
-			page = -1;
-			if (((str.indexOf("modules/message/") > 0) && (document.URL.indexOf("modules/message/") <= 0)) ||
-					((str.indexOf("modules/ccenter/index.php?form") > 0) && (document.URL.indexOf("modules/ccenter/index.php?form") > 0))) {
-				page--;
-				history.go(page);
-				return;
-			}
-		}
-		document.location.href = "<{$xoops_url}>";
-		return;
-	}
-
-	function scroll_up() {
-		myScroll.scrollTo(0, -300, 400, true);
-	}
-	function scroll_down() {
-		myScroll.scrollTo(0, 300, 400, true);
-	}
-
-	function scroll_iine() {
-		var targetOffset = $('#iine').offset().top;
-		$(this).blur();
-		$('html,body').animate({ scrollTop:targetOffset }, 'slow');
-	}
-	function scroll_wordofmouth() {
-		var targetOffset = $('#contents_submit').offset().top;
-		$(this).blur();
-		$('html,body').animate({ scrollTop:targetOffset }, 'slow');
-
-	}
-	function contact_to() {
-		var bool =
-	<
-		{
-			if $contact_button_flg}
-		>
-			true < {else} > false < {
-			/if}>;
-			if (bool) {
-				if (document.URL.indexOf("<{$xoops_url}>/modules/bulletin/") != -1) {
-					location.href = "<{$xoops_url}>/modules/ccenter/index.php?form=" + document.getElementsByName("formid")[0].value;
-				}
-			} else {
-				alert("このメッセージに対して、お問合せはできません。");
-				return;
-			}
-		}
-
-		var linkTags = document.getElementsByTagName('a');
-		var checkExLink = function () {
-			try {
-				return confirm('外部サイト' + this.href + 'へ移動します。よろしいですか？');
-			} catch (e) {
-			}
-		};
-		if (linkTags.length > 0
-				&& document.URL.indexOf("<{$xoops_url}>/modules/branch_information/") < 0
-				&& document.URL.indexOf("<{$xoops_url}>/modules/ob_committee/") < 0) {
-			for (var i in linkTags) {
-				try {
-					if (linkTags[i].href != '' && linkTags[i].href.indexOf('http') == 0 && linkTags[i].href.indexOf('<{$xoops_url}>') == -1 && linkTags[i].onclick == null) {
-						linkTags[i].onclick = checkExLink;
-					}
-				} catch (e) {
-				}
-			}
-		}
-
-</script>
-<!-- Piwik -->
-<script type="text/javascript">
-	var pkBaseURL = "<{$xoops_url}>/piwik/";
-	document.write(unescape("%3Cscript src='" + pkBaseURL + "piwik.js' type='text/javascript'%3E%3C/script%3E"));
-</script>
-<script type="text/javascript">
-	try {
-		var piwikTracker = Piwik.getTracker(pkBaseURL + "piwik.php", 1);
-		piwikTracker.trackPageView();
-		piwikTracker.enableLinkTracking();
-	} catch (err) {
-	}
-</script>
-<noscript><p><img src="<{$xoops_url}>/piwik/piwik.php?idsite=1" style="border:0" alt=""/></p></noscript>
-<!-- End Piwik Tracking Code -->
-<!-- history back script -->
-<script type="text/javascript">
-	function history_back() {
-		var str = document.referrer;
-
-		if (document.URL.indexOf("modules/point/index.php") > 0) {
-			document.location.href = "<{$xoops_url}>";
-			return;
-		}
-		if (document.URL.indexOf("modules/xoopsmembers") > 0) {
-			document.location.href = "<{$xoops_url}>/modules/message/index.php?action=send&menu=send";
-			return;
-		}
-		if (document.URL.indexOf("modules/bulletin") > 0 && document.URL.indexOf("page=article") > 0 && document.URL.indexOf("storyid=") > 0) {
-			document.location.href = "<{$xoops_url}>/modules/message/";
-			return;
-		}
-		if (document.URL.indexOf("modules/bulletin") > 0 && document.URL.indexOf("op=comments") > 0 && document.URL.indexOf("storytopic") > 0) {
-			document.location.href = "<{$xoopsURL}>/modules/bulletin/?op=comments";
-			return;
-		}
-		if (str && ( document.URL.indexOf("modules/point/index.php") <= 0 )) {
-			page = -1;
-			if (((str.indexOf("modules/message/") > 0) && (document.URL.indexOf("modules/message/") <= 0)) ||
-					((str.indexOf("modules/ccenter/index.php?form") > 0) && (document.URL.indexOf("modules/ccenter/index.php?form") > 0))) {
-				page--;
-				history.go(page);
-				return;
-			}
-		}
-		document.location.href = "<{$xoops_url}>";
-		return;
-	}
-
-	function scroll_up() {
-		myScroll.scrollTo(0, -300, 400, true);
-	}
-	function scroll_down() {
-		myScroll.scrollTo(0, 300, 400, true);
-	}
-
-	function scroll_iine() {
-		var targetOffset = $('#iine').offset().top;
-		$(this).blur();
-		$('html,body').animate({ scrollTop:targetOffset }, 'slow');
-	}
-	function scroll_wordofmouth() {
-		var targetOffset = $('#contents_submit').offset().top;
-		$(this).blur();
-		$('html,body').animate({ scrollTop:targetOffset }, 'slow');
-
-	}
-	function contact_to() {
-		var bool =
-	<
-		{
-			if $contact_button_flg}
-		>
-			true < {else} > false < {
-			/if}>;
-			if (bool) {
-				if (document.URL.indexOf("<{$xoops_url}>/modules/bulletin/") != -1) {
-					location.href = "<{$xoops_url}>/modules/ccenter/index.php?form=" + document.getElementsByName("formid")[0].value;
-				}
-			} else {
-				alert("このメッセージに対して、お問合せはできません。");
-				return;
-			}
-		}
-
-		var linkTags = document.getElementsByTagName('a');
-		var checkExLink = function () {
-			try {
-				return confirm('外部サイト' + this.href + 'へ移動します。よろしいですか？');
-			} catch (e) {
-			}
-		};
-		if (linkTags.length > 0
-				&& document.URL.indexOf("<{$xoops_url}>/modules/branch_information/") < 0
-				&& document.URL.indexOf("<{$xoops_url}>/modules/ob_committee/") < 0) {
-			for (var i in linkTags) {
-				try {
-					if (linkTags[i].href != '' && linkTags[i].href.indexOf('http') == 0 && linkTags[i].href.indexOf('<{$xoops_url}>') == -1 && linkTags[i].onclick == null) {
-						linkTags[i].onclick = checkExLink;
-					}
-				} catch (e) {
-				}
-			}
-		}
-
-</script>
-<!-- Piwik -->
-<script type="text/javascript">
-	var pkBaseURL = "<{$xoops_url}>/piwik/";
-	document.write(unescape("%3Cscript src='" + pkBaseURL + "piwik.js' type='text/javascript'%3E%3C/script%3E"));
-</script>
-<script type="text/javascript">
-	try {
-		var piwikTracker = Piwik.getTracker(pkBaseURL + "piwik.php", 1);
-		piwikTracker.trackPageView();
-		piwikTracker.enableLinkTracking();
-	} catch (err) {
-	}
-</script>
-<noscript><p><img src="<{$xoops_url}>/piwik/piwik.php?idsite=1" style="border:0" alt=""/></p></noscript>
-<!-- End Piwik Tracking Code -->
-<!-- history back script -->
-<script type="text/javascript">
-	function history_back() {
-		var str = document.referrer;
-
-		if (document.URL.indexOf("modules/point/index.php") > 0) {
-			document.location.href = "<{$xoops_url}>";
-			return;
-		}
-		if (document.URL.indexOf("modules/xoopsmembers") > 0) {
-			document.location.href = "<{$xoops_url}>/modules/message/index.php?action=send&menu=send";
-			return;
-		}
-		if (document.URL.indexOf("modules/bulletin") > 0 && document.URL.indexOf("page=article") > 0 && document.URL.indexOf("storyid=") > 0) {
-			document.location.href = "<{$xoops_url}>/modules/message/";
-			return;
-		}
-		if (document.URL.indexOf("modules/bulletin") > 0 && document.URL.indexOf("op=comments") > 0 && document.URL.indexOf("storytopic") > 0) {
-			document.location.href = "<{$xoopsURL}>/modules/bulletin/?op=comments";
-			return;
-		}
-		if (str && ( document.URL.indexOf("modules/point/index.php") <= 0 )) {
-			page = -1;
-			if (((str.indexOf("modules/message/") > 0) && (document.URL.indexOf("modules/message/") <= 0)) ||
-					((str.indexOf("modules/ccenter/index.php?form") > 0) && (document.URL.indexOf("modules/ccenter/index.php?form") > 0))) {
-				page--;
-				history.go(page);
-				return;
-			}
-		}
-		document.location.href = "<{$xoops_url}>";
-		return;
-	}
-
-	function scroll_up() {
-		myScroll.scrollTo(0, -300, 400, true);
-	}
-	function scroll_down() {
-		myScroll.scrollTo(0, 300, 400, true);
-	}
-
-	function scroll_iine() {
-		var targetOffset = $('#iine').offset().top;
-		$(this).blur();
-		$('html,body').animate({ scrollTop:targetOffset }, 'slow');
-	}
-	function scroll_wordofmouth() {
-		var targetOffset = $('#contents_submit').offset().top;
-		$(this).blur();
-		$('html,body').animate({ scrollTop:targetOffset }, 'slow');
-
-	}
-	function contact_to() {
-		var bool =
-	<
-		{
-			if $contact_button_flg}
-		>
-			true < {else} > false < {
-			/if}>;
-			if (bool) {
-				if (document.URL.indexOf("<{$xoops_url}>/modules/bulletin/") != -1) {
-					location.href = "<{$xoops_url}>/modules/ccenter/index.php?form=" + document.getElementsByName("formid")[0].value;
-				}
-			} else {
-				alert("このメッセージに対して、お問合せはできません。");
-				return;
-			}
-		}
-
-		var linkTags = document.getElementsByTagName('a');
-		var checkExLink = function () {
-			try {
-				return confirm('外部サイト' + this.href + 'へ移動します。よろしいですか？');
-			} catch (e) {
-			}
-		};
-		if (linkTags.length > 0
-				&& document.URL.indexOf("<{$xoops_url}>/modules/branch_information/") < 0
-				&& document.URL.indexOf("<{$xoops_url}>/modules/ob_committee/") < 0) {
-			for (var i in linkTags) {
-				try {
-					if (linkTags[i].href != '' && linkTags[i].href.indexOf('http') == 0 && linkTags[i].href.indexOf('<{$xoops_url}>') == -1 && linkTags[i].onclick == null) {
-						linkTags[i].onclick = checkExLink;
-					}
-				} catch (e) {
-				}
-			}
-		}
-
-</script>
-<!-- Piwik -->
-<script type="text/javascript">
-	var pkBaseURL = "<{$xoops_url}>/piwik/";
-	document.write(unescape("%3Cscript src='" + pkBaseURL + "piwik.js' type='text/javascript'%3E%3C/script%3E"));
-</script>
-<script type="text/javascript">
-	try {
-		var piwikTracker = Piwik.getTracker(pkBaseURL + "piwik.php", 1);
-		piwikTracker.trackPageView();
-		piwikTracker.enableLinkTracking();
-	} catch (err) {
-	}
-</script>
-<noscript><p><img src="<{$xoops_url}>/piwik/piwik.php?idsite=1" style="border:0" alt=""/></p></noscript>
-<!-- End Piwik Tracking Code -->
-<!-- history back script -->
-<script type="text/javascript">
-	function history_back() {
-		var str = document.referrer;
-
-		if (document.URL.indexOf("modules/point/index.php") > 0) {
-			document.location.href = "<{$xoops_url}>";
-			return;
-		}
-		if (document.URL.indexOf("modules/xoopsmembers") > 0) {
-			document.location.href = "<{$xoops_url}>/modules/message/index.php?action=send&menu=send";
-			return;
-		}
-		if (document.URL.indexOf("modules/bulletin") > 0 && document.URL.indexOf("page=article") > 0 && document.URL.indexOf("storyid=") > 0) {
-			document.location.href = "<{$xoops_url}>/modules/message/";
-			return;
-		}
-		if (document.URL.indexOf("modules/bulletin") > 0 && document.URL.indexOf("op=comments") > 0 && document.URL.indexOf("storytopic") > 0) {
-			document.location.href = "<{$xoopsURL}>/modules/bulletin/?op=comments";
-			return;
-		}
-		if (str && ( document.URL.indexOf("modules/point/index.php") <= 0 )) {
-			page = -1;
-			if (((str.indexOf("modules/message/") > 0) && (document.URL.indexOf("modules/message/") <= 0)) ||
-					((str.indexOf("modules/ccenter/index.php?form") > 0) && (document.URL.indexOf("modules/ccenter/index.php?form") > 0))) {
-				page--;
-				history.go(page);
-				return;
-			}
-		}
-		document.location.href = "<{$xoops_url}>";
-		return;
-	}
-
-	function scroll_up() {
-		myScroll.scrollTo(0, -300, 400, true);
-	}
-	function scroll_down() {
-		myScroll.scrollTo(0, 300, 400, true);
-	}
-
-	function scroll_iine() {
-		var targetOffset = $('#iine').offset().top;
-		$(this).blur();
-		$('html,body').animate({ scrollTop:targetOffset }, 'slow');
-	}
-	function scroll_wordofmouth() {
-		var targetOffset = $('#contents_submit').offset().top;
-		$(this).blur();
-		$('html,body').animate({ scrollTop:targetOffset }, 'slow');
-
-	}
-	function contact_to() {
-		var bool =
-	<
-		{
-			if $contact_button_flg}
-		>
-			true < {else} > false < {
-			/if}>;
-			if (bool) {
-				if (document.URL.indexOf("<{$xoops_url}>/modules/bulletin/") != -1) {
-					location.href = "<{$xoops_url}>/modules/ccenter/index.php?form=" + document.getElementsByName("formid")[0].value;
-				}
-			} else {
-				alert("このメッセージに対して、お問合せはできません。");
-				return;
-			}
-		}
-
-		var linkTags = document.getElementsByTagName('a');
-		var checkExLink = function () {
-			try {
-				return confirm('外部サイト' + this.href + 'へ移動します。よろしいですか？');
-			} catch (e) {
-			}
-		};
-		if (linkTags.length > 0
-				&& document.URL.indexOf("<{$xoops_url}>/modules/branch_information/") < 0
-				&& document.URL.indexOf("<{$xoops_url}>/modules/ob_committee/") < 0) {
-			for (var i in linkTags) {
-				try {
-					if (linkTags[i].href != '' && linkTags[i].href.indexOf('http') == 0 && linkTags[i].href.indexOf('<{$xoops_url}>') == -1 && linkTags[i].onclick == null) {
-						linkTags[i].onclick = checkExLink;
-					}
-				} catch (e) {
-				}
-			}
-		}
-
-</script>
-<!-- Piwik -->
-<script type="text/javascript">
-	var pkBaseURL = "<{$xoops_url}>/piwik/";
-	document.write(unescape("%3Cscript src='" + pkBaseURL + "piwik.js' type='text/javascript'%3E%3C/script%3E"));
-</script>
-<script type="text/javascript">
-	try {
-		var piwikTracker = Piwik.getTracker(pkBaseURL + "piwik.php", 1);
-		piwikTracker.trackPageView();
-		piwikTracker.enableLinkTracking();
-	} catch (err) {
-	}
-</script>
-<noscript><p><img src="<{$xoops_url}>/piwik/piwik.php?idsite=1" style="border:0" alt=""/></p></noscript>
-<!-- End Piwik Tracking Code -->
-<!-- history back script -->
-<script type="text/javascript">
-	function history_back() {
-		var str = document.referrer;
-
-		if (document.URL.indexOf("modules/point/index.php") > 0) {
-			document.location.href = "<{$xoops_url}>";
-			return;
-		}
-		if (document.URL.indexOf("modules/xoopsmembers") > 0) {
-			document.location.href = "<{$xoops_url}>/modules/message/index.php?action=send&menu=send";
-			return;
-		}
-		if (document.URL.indexOf("modules/bulletin") > 0 && document.URL.indexOf("page=article") > 0 && document.URL.indexOf("storyid=") > 0) {
-			document.location.href = "<{$xoops_url}>/modules/message/";
-			return;
-		}
-		if (document.URL.indexOf("modules/bulletin") > 0 && document.URL.indexOf("op=comments") > 0 && document.URL.indexOf("storytopic") > 0) {
-			document.location.href = "<{$xoopsURL}>/modules/bulletin/?op=comments";
-			return;
-		}
-		if (str && ( document.URL.indexOf("modules/point/index.php") <= 0 )) {
-			page = -1;
-			if (((str.indexOf("modules/message/") > 0) && (document.URL.indexOf("modules/message/") <= 0)) ||
-					((str.indexOf("modules/ccenter/index.php?form") > 0) && (document.URL.indexOf("modules/ccenter/index.php?form") > 0))) {
-				page--;
-				history.go(page);
-				return;
-			}
-		}
-		document.location.href = "<{$xoops_url}>";
-		return;
-	}
-
-	function scroll_up() {
-		myScroll.scrollTo(0, -300, 400, true);
-	}
-	function scroll_down() {
-		myScroll.scrollTo(0, 300, 400, true);
-	}
-
-	function scroll_iine() {
-		var targetOffset = $('#iine').offset().top;
-		$(this).blur();
-		$('html,body').animate({ scrollTop:targetOffset }, 'slow');
-	}
-	function scroll_wordofmouth() {
-		var targetOffset = $('#contents_submit').offset().top;
-		$(this).blur();
-		$('html,body').animate({ scrollTop:targetOffset }, 'slow');
-
-	}
-	function contact_to() {
-		var bool =
-	<
-		{
-			if $contact_button_flg}
-		>
-			true < {else} > false < {
-			/if}>;
-			if (bool) {
-				if (document.URL.indexOf("<{$xoops_url}>/modules/bulletin/") != -1) {
-					location.href = "<{$xoops_url}>/modules/ccenter/index.php?form=" + document.getElementsByName("formid")[0].value;
-				}
-			} else {
-				alert("このメッセージに対して、お問合せはできません。");
-				return;
-			}
-		}
-
-		var linkTags = document.getElementsByTagName('a');
-		var checkExLink = function () {
-			try {
-				return confirm('外部サイト' + this.href + 'へ移動します。よろしいですか？');
-			} catch (e) {
-			}
-		};
-		if (linkTags.length > 0
-				&& document.URL.indexOf("<{$xoops_url}>/modules/branch_information/") < 0
-				&& document.URL.indexOf("<{$xoops_url}>/modules/ob_committee/") < 0) {
-			for (var i in linkTags) {
-				try {
-					if (linkTags[i].href != '' && linkTags[i].href.indexOf('http') == 0 && linkTags[i].href.indexOf('<{$xoops_url}>') == -1 && linkTags[i].onclick == null) {
-						linkTags[i].onclick = checkExLink;
-					}
-				} catch (e) {
-				}
-			}
-		}
-
-</script>
-<!-- Piwik -->
-<script type="text/javascript">
-	var pkBaseURL = "<{$xoops_url}>/piwik/";
-	document.write(unescape("%3Cscript src='" + pkBaseURL + "piwik.js' type='text/javascript'%3E%3C/script%3E"));
-</script>
-<script type="text/javascript">
-	try {
-		var piwikTracker = Piwik.getTracker(pkBaseURL + "piwik.php", 1);
-		piwikTracker.trackPageView();
-		piwikTracker.enableLinkTracking();
-	} catch (err) {
-	}
-</script>
-<noscript><p><img src="<{$xoops_url}>/piwik/piwik.php?idsite=1" style="border:0" alt=""/></p></noscript>
-<!-- End Piwik Tracking Code -->
-
 </body>
 </html>
