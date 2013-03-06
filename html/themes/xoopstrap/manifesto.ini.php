@@ -5,7 +5,7 @@
 Name="xoopstrap"
 Depends=Legacy_RenderSystem,legacy
 Url="https://github.com/bluemooninc/xoopstrap"
-Version="0.6"
+Version="0.5"
 
 [Theme]
 RenderSystem=Legacy_RenderSystem
